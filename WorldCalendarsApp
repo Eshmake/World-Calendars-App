@@ -1,0 +1,1138 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Wed Apr 20 10:40:00 2022
+
+Made with Spyder (Python 3.9) in the Python programming language.
+"""
+
+#Calendar Proj.
+
+import tkinter as tk
+
+import datetime as dt
+
+from functools import partial
+
+ 
+
+# hijri_converter module downloaded from https://pypi.org/project/hijri-converter/ , and made by Mohammed H Alshehri under MIT License (MIT).
+from hijri_converter import Hijri, Gregorian
+
+# LunarCalendar module downloaded from https://pypi.org/project/LunarCalendar/ , and made by wolfhong under MIT License (MIT).
+from lunarcalendar import Converter, Solar
+
+#PersianTools module downloaded from https://pypi.org/project/persiantools/ , and made by Majid Halijoo under MIT License (MIT).
+from persiantools.jdatetime import JalaliDate
+
+#convertdate module downloaded from https://pypi.org/project/convertdate/ , and made by Neil Freeman under MIT License (MIT).
+from convertdate import hebrew, indian_civil
+
+
+
+
+
+window_main = tk.Tk()
+window_main.geometry('325x450')
+window_main.title('World Calendars')
+window_main.config(bg = 'grey')
+font_type = 'Arial'
+font_type_size = 'Arial', 15
+
+
+
+
+
+def displayEvent(area, label):
+    #Procedure that displays date of entered calendar event.
+    
+    dateTodGC = Gregorian.today()
+    yearTodIC = dateTodGC.to_hijri().year
+    
+    dateTodDT = dt.date.today()
+    solarDate = Solar(dateTodDT.year, dateTodDT.month, dateTodDT.day)
+    lunarDate = Converter.Solar2Lunar(solarDate)
+
+    yearTodCC = lunarDate.year
+    
+    yearTodGC = dateTodGC.year
+    
+    dateTodPC = JalaliDate.today()
+    yearTodPC = dateTodPC.year
+    
+    dateTodJC = hebrew.from_gregorian(dateTodGC.year, dateTodGC.month, dateTodGC.day)
+    yearTodJC = dateTodJC[0]
+    
+    dateTodSC = indian_civil.from_gregorian(dateTodGC.year, dateTodGC.month, dateTodGC.day)
+    yearTodSC = dateTodSC[0]
+    
+    
+    
+    
+    IC_Events = ['Islamic New Year', 'Ashura', 'Tasua', 'Mawlid', 'Laylat al-Qadr', 'Eid al-Fitr', 
+              'Eid al-Adha', 'Eid al-Ghadeer']
+
+    CC_Events = ['Chinese New Year', 'Lantern Festival', 
+    'Zhonghe Festival']
+    
+    GC_Events = ['Gregorian New Year', 'Easter', 'Christmas']
+    
+    PC_Events = ['Iranian New Year', 'Nowruz', 'Islamic Republic Day', 'Sizdah Bedar', 'Yalda']
+    
+    JC_Events = ['Jewish New Year', 'Rosh Hashanah', 'Yom Kippur', 'Passover', 'Purim', 'Hannukah']
+    
+    SC_Events = ['Indian Civil New Year', 'Shaka New Year', 'Republic Day', 'Independence Day', 'Gandhi Jayanati']
+    
+    
+    
+
+    
+    
+
+    #Islamic events.
+    
+    INY = 1, 1, yearTodIC
+    A = 1, 10, yearTodIC
+    T = 1, 9, yearTodIC
+    M = 3, 17, yearTodIC
+    LQ = 9, 23, yearTodIC 
+    EF = 10, 1, yearTodIC
+    EA = 12, 10, yearTodIC
+    EG = 12, 18, yearTodIC
+    
+   
+    #Chinese events.
+    
+    CNY = 1, 1, yearTodCC 
+    LF = 1, 15, yearTodCC
+    ZF = 2, 2, yearTodCC 
+
+    
+    #Gregorian events.
+    
+    GNY = 1, 1, yearTodGC
+    ES = 4, 17, yearTodGC
+    CM = 12, 25, yearTodGC 
+    
+    
+    #Jalali events.
+    
+    INY = 1, 1, yearTodPC
+    NR = 1, 1, yearTodPC
+    IRD = 1, 12, yearTodPC
+    SB = 1, 13, yearTodPC
+    Y = 9, 30, yearTodPC
+    
+    
+    #Hebrew events.
+    
+    JNY = 7, 1, yearTodJC 
+    RH = 7, 1, yearTodJC
+    YK = 7, 10, yearTodJC
+    PO = 1, 15, yearTodJC
+    PR = 12, 14, yearTodJC
+    H = 9, 25, yearTodJC
+    
+    
+    #Shaka events.
+    
+    ICNY = 1, 1, yearTodSC
+    SNY = 1, 1, yearTodSC
+    RD = 11, 6, yearTodSC
+    ID = 5, 24, yearTodSC
+    GJ = 7, 10, yearTodSC
+    
+    
+    
+    IC_Dates = [INY, A, T, M, LQ, EF, EA, EG]
+    
+    CC_Dates = [CNY, LF, ZF]
+    
+    GC_Dates = [GNY, ES, CM]
+    
+    PC_Dates = [INY, NR, IRD, SB, Y]
+    
+    JC_Dates = [JNY, RH, YK, PO, PR, H]
+    
+    SC_Dates = [ICNY, SNY, RD, ID, GJ]
+
+  
+    
+    entry = area.get()
+
+    if entry in IC_Events:
+        for event in IC_Events:
+            if event == entry:
+                ind = IC_Events.index(event)
+                date = IC_Dates[ind]
+                label.config(text = str(date).strip('(').strip(')'))
+    
+    elif entry in CC_Events:
+        for event in CC_Events:
+            if event == entry:
+                ind = CC_Events.index(event)
+                date = CC_Dates[ind]
+                label.config(text = str(date).strip('(').strip(')'))
+
+    
+    elif entry in GC_Events:
+        for event in GC_Events:
+            if event == entry:
+                ind = GC_Events.index(event)
+                date = GC_Dates[ind]
+                label.config(text = str(date).strip('(').strip(')'))
+                
+   
+    elif entry in PC_Events:
+        for event in PC_Events:
+            if event == entry:
+                ind = PC_Events.index(event)
+                date = PC_Dates[ind]
+                label.config(text = str(date).strip('(').strip(')'))
+                
+                
+    elif entry in JC_Events:
+        for event in JC_Events:
+            if event == entry:
+                ind = JC_Events.index(event)
+                date = JC_Dates[ind]
+                label.config(text = str(date).strip('(').strip(')'))
+                
+                
+    elif entry in SC_Events:
+        for event in SC_Events:
+            if event == entry:
+                ind = SC_Events.index(event)
+                date = SC_Dates[ind]
+                label.config(text = str(date).strip('(').strip(')'))
+        
+   
+        
+
+
+def obtainIC():
+    #Displays window for Islamic Calendar.
+
+    global font_type
+    global font_type_size
+
+    win_IC = tk.Tk()
+    win_IC.geometry('500x500')
+    win_IC.title('Islamic Calendar')
+    win_IC.config(bg = 'white')
+
+    titleIC = tk.Label(win_IC, text = 'Islamic (Hijri) Calendar',
+                        bg = 'green',
+                        fg = 'white',
+                        font = font_type)
+    titleIC.place(x = 125,
+                  y = 0)
+    titleIC.config(width= 30,
+                    height = 3)
+
+    labelIC_date = tk.Label(win_IC,
+                            text = '',
+                            bg = 'yellow',
+                            fg = 'black',
+                            font = font_type_size)
+    labelIC_date.place(x = 0,
+                        y = 51)
+    labelIC_date.config(width = 30,
+                        height = 5)
+
+
+    labelIC_time = tk.Label(win_IC,
+                            text = '',
+                            bg = 'yellow',
+                            fg = 'black',
+                            font = font_type_size)
+    labelIC_time.place(x = 255,
+                        y = 51)
+    labelIC_time.config(width = 30,
+                        height = 5)
+
+
+
+    def timeNowIC():
+    #Sets time label to current real time
+
+        currTime = dt.datetime.now()
+        currTime2 = currTime.strftime("%H:%M:%S")
+        labelIC_time.config(text = currTime2)
+
+
+
+    def displayTodayIC():
+      #Sets date label to current Islamic date and recursively updates time label to make it accurate in real-time.
+        dateTodayGreg = Gregorian.today()
+
+        yearNowIC = dateTodayGreg.to_hijri().year
+        monthNowIC = dateTodayGreg.to_hijri().month
+        dayNowIC = dateTodayGreg.to_hijri().day
+
+        labelIC_date.config(text = '{}, {}, {}'.format(monthNowIC, dayNowIC, yearNowIC))
+        timeNowIC()
+        labelIC_time.after(1000, displayTodayIC)
+
+
+    buttonTodayIC = tk.Button(win_IC,
+                              text = 'Display Today\'s Date',
+                              bg = 'grey',
+                              fg = 'black',
+                              bd = 10,
+                              font = font_type_size,
+                              command = displayTodayIC)
+
+
+    buttonTodayIC.config(width = 15,
+                          height = 2)
+
+    buttonTodayIC.place(x = 25,
+                        y = 150)
+
+
+    areaIC = tk.Entry(win_IC, 
+                      text = 'Enter Islamic Event', 
+                      font = font_type)
+    
+    areaIC.place(x = 250,
+                 y = 218)
+
+    areaIC.config(width = 28)
+                  
+    
+
+    labelEventsIC = tk.Label(win_IC, 
+                             text = 'Event Date', 
+                             bg = 'blue', 
+                             fg = 'white',
+                             bd = 5,
+                             font = font_type)
+    
+    labelEventsIC.place(x = 250,
+                        y = 150)
+    
+    labelEventsIC.config(width = 24,
+                         height = 3)
+
+
+
+
+    eventCallIC = partial(displayEvent, areaIC, labelEventsIC)
+    
+    
+    buttonEventIC = tk.Button(win_IC, 
+                              text = 'Display Event Date', 
+                              bg = 'grey', 
+                              fg = 'black',
+                              font = font_type,
+                              command = eventCallIC)
+    
+    
+    buttonEventIC.place(x = 250,
+                        y = 250)
+    
+    buttonEventIC.config(width = 20,
+                         height = 2,
+                         bd = 10)
+   
+    
+    
+    
+
+    win_IC.mainloop()
+
+
+
+
+def obtainCC():
+    #Displays window for Chinese Calendar.
+
+    win_CC = tk.Tk()
+    win_CC.geometry('500x500')
+    win_CC.title('Chinese Calendar')
+    win_CC.config(bg = 'white')
+
+    titleCC = tk.Label(win_CC, text = 'Chinese Calendar',
+                        bg = 'red',
+                        fg = 'white',
+                        font = font_type)
+    titleCC.place(x = 125,
+                  y = 0)
+    titleCC.config(width= 30,
+                    height = 3)
+
+    labelCC_date = tk.Label(win_CC,
+                            text = '',
+                            bg = 'orange',
+                            fg = 'black',
+                            font = font_type_size)
+    labelCC_date.place(x = 0,
+                        y = 51)
+    labelCC_date.config(width = 30,
+                        height = 5)
+
+
+    labelCC_time = tk.Label(win_CC,
+                            text = '',
+                            bg = 'orange',
+                            fg = 'black',
+                            font = font_type_size)
+    labelCC_time.place(x = 255,
+                        y = 51)
+    labelCC_time.config(width = 30,
+                        height = 5)
+
+
+    def timeNowCC():
+    #Sets time label to current real time
+
+        currTime = dt.datetime.now()
+        currTime2 = currTime.strftime("%H:%M:%S")
+        labelCC_time.config(text = currTime2)
+
+    def displayTodayCC():
+      #Sets date label to current Islamic date and recursively updates time label to make it accurate in real-time.
+        date = dt.date.today()
+        solar = Solar(date.year, date.month, date.day)
+        lunar = Converter.Solar2Lunar(solar)
+
+        yearNowCC = lunar.year
+        monthNowCC = lunar.month
+        dayNowCC = lunar.day
+
+        labelCC_date.config(text = '{}, {}, {}'.format(monthNowCC, dayNowCC, yearNowCC))
+        timeNowCC()
+        labelCC_time.after(1000, displayTodayCC)
+
+
+    buttonTodayCC = tk.Button(win_CC,
+                              text = 'Display Today\'s Date',
+                              bg = 'grey',
+                              fg = 'black',
+                              bd = 10,
+                              font = font_type_size,
+                              command = displayTodayCC)
+
+
+    buttonTodayCC.config(width = 15,
+                         height = 2)
+
+    buttonTodayCC.place(x = 25,
+                        y = 150)
+    
+    
+    areaCC = tk.Entry(win_CC, 
+                      text = 'Enter Chinese Event', 
+                      font = font_type)
+    
+    areaCC.place(x = 250,
+                 y = 218)
+
+    areaCC.config(width = 28)
+                  
+    
+
+    labelEventsCC = tk.Label(win_CC, 
+                             text = 'Event Date', 
+                             bg = 'blue', 
+                             fg = 'white', 
+                             bd = 5,
+                             font = font_type)
+    
+    labelEventsCC.place(x = 250,
+                        y = 150)
+    
+    labelEventsCC.config(width = 24,
+                         height = 3)
+    
+     
+    eventCallCC = partial(displayEvent, areaCC, labelEventsCC)                
+    
+    
+    buttonEventCC = tk.Button(win_CC, 
+                              text = 'Display Event Date', 
+                              bg = 'grey', 
+                              fg = 'black',
+                              command = eventCallCC)
+    
+    
+    buttonEventCC.place(x = 250,
+                        y = 250)
+    
+    buttonEventCC.config(width = 20,
+                         height = 2,
+                         bd = 10)
+
+    win_CC.mainloop()
+    
+
+
+
+def obtainGC():
+    #Displays window for Gregorian Calendar.
+
+    global font_type
+    global font_type_size
+
+    win_GC = tk.Tk()
+    win_GC.geometry('500x500')
+    win_GC.title('Gregorian Calendar')
+    win_GC.config(bg = 'white')
+
+    titleGC = tk.Label(win_GC, text = 'Gregorian Calendar',
+                        bg = 'Orange',
+                        fg = 'white',
+                        font = font_type)
+    titleGC.place(x = 125,
+                  y = 0)
+    titleGC.config(width= 30,
+                    height = 3) 
+
+    labelGC_date = tk.Label(win_GC,
+                            text = '',
+                            bg = 'grey',
+                            fg = 'black',
+                            font = font_type_size)
+    labelGC_date.place(x = 0,
+                        y = 51)
+    labelGC_date.config(width = 30,
+                        height = 5)
+
+
+    labelGC_time = tk.Label(win_GC,
+                            text = '',
+                            bg = 'grey',
+                            fg = 'black',
+                            font = font_type_size)
+    labelGC_time.place(x = 255,
+                        y = 51)
+    labelGC_time.config(width = 30,
+                        height = 5)
+
+
+
+    def timeNowGC():
+    #Sets time label to current real time
+
+        currTime = dt.datetime.now()
+        currTime2 = currTime.strftime("%H:%M:%S")
+        labelGC_time.config(text = currTime2)
+
+
+
+    def displayTodayGC():
+      #Sets date label to current Gregorian date and recursively updates time label to make it accurate in real-time.
+        dateTodayGreg = Gregorian.today()
+
+        yearNowGC = dateTodayGreg.year
+        monthNowGC = dateTodayGreg.month
+        dayNowGC = dateTodayGreg.day
+
+        labelGC_date.config(text = '{}, {}, {}'.format(monthNowGC, dayNowGC, yearNowGC))
+        timeNowGC()
+        labelGC_time.after(1000, displayTodayGC)
+
+
+    buttonTodayGC = tk.Button(win_GC,
+                              text = 'Display Today\'s Date',
+                              bg = 'grey',
+                              fg = 'black',
+                              bd = 10,
+                              font = font_type_size,
+                              command = displayTodayGC)
+
+
+    buttonTodayGC.config(width = 15,
+                          height = 2)
+
+    buttonTodayGC.place(x = 25,
+                        y = 150)
+
+
+    areaGC = tk.Entry(win_GC, 
+                      text = 'Enter Gregorian Event', 
+                      font = font_type)
+    
+    areaGC.place(x = 250,
+                 y = 218)
+
+    areaGC.config(width = 28)
+                  
+    
+
+    labelEventsGC = tk.Label(win_GC, 
+                             text = 'Event Date', 
+                             bg = 'blue', 
+                             fg = 'white',
+                             bd = 5,
+                             font = font_type)
+    
+    labelEventsGC.place(x = 250,
+                        y = 150)
+    
+    labelEventsGC.config(width = 24,
+                         height = 3)
+
+
+
+    eventCallGC = partial(displayEvent, areaGC, labelEventsGC)
+    
+    
+    buttonEventGC = tk.Button(win_GC, 
+                              text = 'Display Event Date', 
+                              bg = 'grey', 
+                              fg = 'black',
+                              font = font_type,
+                              command = eventCallGC)
+    
+    
+    buttonEventGC.place(x = 250,
+                        y = 250)
+    
+    buttonEventGC.config(width = 20,
+                         height = 2,
+                         bd = 10)
+   
+    
+
+    win_GC.mainloop()
+
+
+
+
+
+def obtainPC():
+    #Displays window for Persian Calendar.
+
+    global font_type
+    global font_type_size
+
+    win_PC = tk.Tk()
+    win_PC.geometry('500x500')
+    win_PC.title('Persian Calendar')
+    win_PC.config(bg = 'white')
+
+    titlePC = tk.Label(win_PC, text = 'Persian (Jalali) Calendar',
+                        bg = 'brown',
+                        fg = 'white',
+                        font = font_type)
+    titlePC.place(x = 125,
+                  y = 0)
+    titlePC.config(width= 30,
+                    height = 3) 
+
+    labelPC_date = tk.Label(win_PC,
+                            text = '',
+                            bg = 'red',
+                            fg = 'black',
+                            font = font_type_size)
+    labelPC_date.place(x = 0,
+                        y = 51)
+    labelPC_date.config(width = 30,
+                        height = 5)
+
+
+    labelPC_time = tk.Label(win_PC,
+                            text = '',
+                            bg = 'red',
+                            fg = 'black',
+                            font = font_type_size)
+    labelPC_time.place(x = 255,
+                        y = 51)
+    labelPC_time.config(width = 30,
+                        height = 5)
+
+
+
+    def timeNowPC():
+    #Sets time label to current real time
+
+        currTime = dt.datetime.now()
+        currTime2 = currTime.strftime("%H:%M:%S")
+        labelPC_time.config(text = currTime2)
+
+
+
+    def displayTodayPC():
+      #Sets date label to current Gregorian date and recursively updates time label to make it accurate in real-time.
+        
+        jalaliDateNow = JalaliDate.today()
+
+        yearNowPC = jalaliDateNow.year
+        monthNowPC = jalaliDateNow.month
+        dayNowPC = jalaliDateNow.day
+
+        labelPC_date.config(text = '{}, {}, {}'.format(monthNowPC, dayNowPC, yearNowPC))
+        timeNowPC()
+        labelPC_time.after(1000, displayTodayPC)
+
+
+    buttonTodayPC = tk.Button(win_PC,
+                              text = 'Display Today\'s Date',
+                              bg = 'grey',
+                              fg = 'black',
+                              bd = 10,
+                              font = font_type_size,
+                              command = displayTodayPC)
+
+
+    buttonTodayPC.config(width = 15,
+                          height = 2)
+
+    buttonTodayPC.place(x = 25,
+                        y = 150)
+
+
+    areaPC = tk.Entry(win_PC, 
+                      text = 'Enter Persian Event', 
+                      font = font_type)
+    
+    areaPC.place(x = 250,
+                 y = 218)
+
+    areaPC.config(width = 28)
+                  
+    
+
+    labelEventsPC = tk.Label(win_PC, 
+                             text = 'Event Date', 
+                             bg = 'blue', 
+                             fg = 'white',
+                             bd = 5,
+                             font = font_type)
+    
+    labelEventsPC.place(x = 250,
+                        y = 150)
+    
+    labelEventsPC.config(width = 24,
+                         height = 3)
+
+
+
+    eventCallPC = partial(displayEvent, areaPC, labelEventsPC)
+    
+    
+    buttonEventPC = tk.Button(win_PC, 
+                              text = 'Display Event Date', 
+                              bg = 'grey', 
+                              fg = 'black',
+                              font = font_type,
+                              command = eventCallPC)
+    
+    
+    buttonEventPC.place(x = 250,
+                        y = 250)
+    
+    buttonEventPC.config(width = 20,
+                         height = 2,
+                         bd = 10)
+      
+
+    win_PC.mainloop()
+   
+    
+ 
+    
+def obtainJC():
+    #Displays window for Jewish Calendar.
+
+    global font_type
+    global font_type_size
+
+    win_JC = tk.Tk()
+    win_JC.geometry('500x500')
+    win_JC.title('Jewish Calendar')
+    win_JC.config(bg = 'white')
+
+    titleJC = tk.Label(win_JC, text = 'Jewish (Hebrew) Calendar',
+                        bg = 'purple',
+                        fg = 'white',
+                        font = font_type)
+   
+    titleJC.place(x = 125,
+                  y = 0)
+    titleJC.config(width= 30,
+                    height = 3) 
+
+    labelJC_date = tk.Label(win_JC,
+                            text = '',
+                            bg = 'brown',
+                            fg = 'black',
+                            font = font_type_size)
+   
+    labelJC_date.place(x = 0,
+                        y = 51)
+    labelJC_date.config(width = 30,
+                        height = 5)
+
+
+    labelJC_time = tk.Label(win_JC,
+                            text = '',
+                            bg = 'brown',
+                            fg = 'black',
+                            font = font_type_size)
+   
+    labelJC_time.place(x = 255,
+                        y = 51)
+    labelJC_time.config(width = 30,
+                        height = 5)
+
+
+
+    def timeNowJC():
+    #Sets time label to current real time
+
+        currTime = dt.datetime.now()
+        currTime2 = currTime.strftime("%H:%M:%S")
+        labelJC_time.config(text = currTime2)
+
+
+
+    def displayTodayJC():
+      #Sets date label to current Gregorian date and recursively updates time label to make it accurate in real-time.
+        
+        dateTodayGreg = Gregorian.today()
+        
+        dateTodayHebrew = hebrew.from_gregorian(dateTodayGreg.year, dateTodayGreg.month, dateTodayGreg.day)
+        
+
+        yearNowJC = dateTodayHebrew[0]
+        monthNowJC = dateTodayHebrew[1]
+        dayNowJC = dateTodayHebrew[2]
+
+        labelJC_date.config(text = '{}, {}, {}'.format(monthNowJC, dayNowJC, yearNowJC))
+        timeNowJC()
+        labelJC_time.after(1000, displayTodayJC)
+
+
+    buttonTodayJC = tk.Button(win_JC,
+                              text = 'Display Today\'s Date',
+                              bg = 'grey',
+                              fg = 'black',
+                              bd = 10,
+                              font = font_type_size,
+                              command = displayTodayJC)
+
+
+    buttonTodayJC.config(width = 15,
+                          height = 2)
+
+    buttonTodayJC.place(x = 25,
+                        y = 150)
+
+
+    areaJC = tk.Entry(win_JC, 
+                      text = 'Enter Jewish Event', 
+                      font = font_type)
+    
+    areaJC.place(x = 250,
+                 y = 218)
+
+    areaJC.config(width = 28)
+                  
+    
+
+    labelEventsJC = tk.Label(win_JC, 
+                             text = 'Event Date', 
+                             bg = 'blue', 
+                             fg = 'white',
+                             bd = 5,
+                             font = font_type)
+    
+    labelEventsJC.place(x = 250,
+                        y = 150)
+    
+    labelEventsJC.config(width = 24,
+                         height = 3)
+
+
+
+    eventCallJC = partial(displayEvent, areaJC, labelEventsJC)
+    
+    
+    buttonEventJC = tk.Button(win_JC, 
+                              text = 'Display Event Date', 
+                              bg = 'grey', 
+                              fg = 'black',
+                              font = font_type,
+                              command = eventCallJC)
+    
+    
+    buttonEventJC.place(x = 250,
+                        y = 250)
+    
+    buttonEventJC.config(width = 20,
+                         height = 2,
+                         bd = 10)
+   
+    
+
+    win_JC.mainloop()
+    
+    
+    
+    
+def obtainSC():
+    #Displays window for Indian Civil Calendar.
+
+    global font_type
+    global font_type_size
+
+    win_SC = tk.Tk()
+    win_SC.geometry('500x500')
+    win_SC.title('Indian Civil Calendar')
+    win_SC.config(bg = 'white')
+
+    titleSC = tk.Label(win_SC, text = 'Indian Civil (Shaka) Calendar',
+                        bg = 'orange',
+                        fg = 'white',
+                        font = font_type)
+   
+    titleSC.place(x = 125,
+                  y = 0)
+    titleSC.config(width= 30,
+                    height = 3) 
+
+    labelSC_date = tk.Label(win_SC,
+                            text = '',
+                            bg = 'green',
+                            fg = 'black',
+                            font = font_type_size)
+   
+    labelSC_date.place(x = 0,
+                        y = 51)
+    labelSC_date.config(width = 30,
+                        height = 5)
+
+
+    labelSC_time = tk.Label(win_SC,
+                            text = '',
+                            bg = 'green',
+                            fg = 'black',
+                            font = font_type_size)
+   
+    labelSC_time.place(x = 255,
+                        y = 51)
+    labelSC_time.config(width = 30,
+                        height = 5)
+
+
+
+    def timeNowSC():
+    #Sets time label to current real time
+
+        currTime = dt.datetime.now()
+        currTime2 = currTime.strftime("%H:%M:%S")
+        labelSC_time.config(text = currTime2)
+
+
+
+    def displayTodaySC():
+      #Sets date label to current Gregorian date and recursively updates time label to make it accurate in real-time.
+        
+        dateTodayGreg = Gregorian.today()
+        
+        dateTodayShaka = indian_civil.from_gregorian(dateTodayGreg.year, dateTodayGreg.month, dateTodayGreg.day)
+        
+
+        yearNowSC = dateTodayShaka[0]
+        monthNowSC = dateTodayShaka[1]
+        dayNowSC = dateTodayShaka[2]
+
+        labelSC_date.config(text = '{}, {}, {}'.format(monthNowSC, dayNowSC, yearNowSC))
+        timeNowSC()
+        labelSC_time.after(1000, displayTodaySC)
+
+
+    buttonTodaySC = tk.Button(win_SC,
+                              text = 'Display Today\'s Date',
+                              bg = 'grey',
+                              fg = 'black',
+                              bd = 10,
+                              font = font_type_size,
+                              command = displayTodaySC)
+
+
+    buttonTodaySC.config(width = 15,
+                          height = 2)
+
+    buttonTodaySC.place(x = 25,
+                        y = 150)
+
+
+    areaSC = tk.Entry(win_SC, 
+                      text = 'Enter Jewish Event', 
+                      font = font_type)
+    
+    areaSC.place(x = 250,
+                 y = 218)
+
+    areaSC.config(width = 28)
+                  
+    
+
+    labelEventsSC = tk.Label(win_SC, 
+                             text = 'Event Date', 
+                             bg = 'blue', 
+                             fg = 'white',
+                             bd = 5,
+                             font = font_type)
+    
+    labelEventsSC.place(x = 250,
+                        y = 150)
+    
+    labelEventsSC.config(width = 24,
+                         height = 3)
+
+
+
+    eventCallSC = partial(displayEvent, areaSC, labelEventsSC)
+    
+    
+    buttonEventSC = tk.Button(win_SC, 
+                              text = 'Display Event Date', 
+                              bg = 'grey', 
+                              fg = 'black',
+                              font = font_type,
+                              command = eventCallSC)
+    
+    
+    buttonEventSC.place(x = 250,
+                        y = 250)
+    
+    buttonEventSC.config(width = 20,
+                         height = 2,
+                         bd = 10)
+   
+    
+
+    win_SC.mainloop()
+
+
+
+#Main Window:
+
+
+title_main = tk.Label(window_main,
+                      text = 'World Calendars',
+                      bg = 'white',
+                      fg = 'black',
+                      font = font_type)
+
+title_main.grid(row = 0,
+                column = 5,
+                sticky = 'N')
+
+title_main.config(width = 40,
+                  height = 3)
+
+
+
+buttonIC = tk.Button(window_main,
+                    text = 'Islamic Calendar',
+                    bg = 'green',
+                    fg = 'black',
+                    bd = 10,
+                    font = font_type,
+                    command = obtainIC)
+
+
+buttonIC.grid(row = 2,
+              column = 5)
+
+buttonIC.config(width = 20,
+                height = 2)
+
+
+buttonCC = tk.Button(window_main,
+                    text = 'Chinese Calendar',
+                    bg = 'red',
+                    fg = 'black',
+                    bd = 10,
+                    font = font_type,
+                    command = obtainCC)
+
+
+buttonCC.grid(row = 3,
+              column = 5)
+
+buttonCC.config(width = 20,
+                height = 2)
+
+
+buttonGC = tk.Button(window_main,
+                    text = 'Gregorian Calendar',
+                    bg = 'grey',
+                    fg = 'black',
+                    bd = 10,
+                    font = font_type,
+                    command = obtainGC)
+
+
+buttonGC.grid(row = 4,
+              column = 5)
+
+buttonGC.config(width = 20,
+                height = 2)
+
+
+
+buttonPC = tk.Button(window_main,
+                    text = 'Persian Calendar',
+                    bg = 'brown',
+                    fg = 'black',
+                    bd = 10,
+                    font = font_type,
+                    command = obtainPC)
+
+
+buttonPC.grid(row = 5,
+              column = 5)
+
+buttonPC.config(width = 20,
+                height = 2)
+
+
+
+
+buttonJC = tk.Button(window_main,
+                    text = 'Jewish Calendar',
+                    bg = 'purple',
+                    fg = 'black',
+                    bd = 10,
+                    font = font_type,
+                    command = obtainJC)
+
+
+buttonJC.grid(row = 6,
+              column = 5)
+
+buttonJC.config(width = 20,
+                height = 2)
+
+
+buttonSC = tk.Button(window_main,
+                    text = 'Indian Civil Calendar',
+                    bg = 'blue',
+                    fg = 'black',
+                    bd = 10,
+                    font = font_type,
+                    command = obtainSC)
+
+
+buttonSC.grid(row = 7,
+              column = 5)
+
+buttonSC.config(width = 20,
+                height = 2)
+
+
+
+
+window_main.mainloop()
+
+
+
+
+
